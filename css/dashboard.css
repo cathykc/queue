@@ -1,0 +1,27 @@
+body {
+  	padding-top: 50px;
+}
+.sometext {
+  	padding: 40px 15px;
+  	margin-top: 30px;
+  	text-align: center;
+}
+
+.navbar {
+	background-color: #339933;
+	/*margin-bottom: 20px;*/
+	padding: 0px;
+}
+
+.navbar-header .navbar-text {
+	color: #fff;
+	font-size: 30px;
+	font-family: 'Goudy Bookletter 1911', serif;
+	padding: 0px;
+}
+
+.navbar-text {
+	color: #fff;
+	font-size: 18px;
+	padding-top: 8px;
+}
