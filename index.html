@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Queue</title>
-	
+
 	<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 
 	<link rel="stylesheet" href="css/style.css"/>
@@ -48,33 +48,75 @@
 
 	$(document).ready(function() {
 
-		$("#login").mouseenter(function() {
-			var user = new Parse.User();
+		$("#login").on('mouseenter', function() {
+
+			console.log("IM COMING IN");
 
 			var email = $("#email").val();
-			user.set("username", email);
+			var password = $("#password").val();
 
-			// var phone = document.getElementbyID("phone");
-			user.set("phone", "0242984230");
+			var newUser = true;
 
-			// var password = document.getElementbyID("password");
-			user.set("password", "testing")
+			var query = new Parse.Query(Parse.User);
+			query.equalTo("username", email); 
+			query.find({
+  				success: function(person) {
+  					if (person.length > 0) {
+  						console.log("it was a successful search");
+ 						newUser = false;
 
-			user.signUp(null, {
-  				success: function(user) {
-  					if(!user.admin) {
-  						window.location.href = "classlist.html";
-  					}
-  					else {
-  						window.location.href = "admin.html";
-  					}
-  				},
- 				error: function(user, error) {
-    				alert("Error: " + error.code + " " + error.message);
+ 						Parse.User.logIn(email, password, {
+  							success: function(user) {
+  								console.log("has successfully logged in");
+                  console.log(user.get("admin"));
+                  if(user.get("admin")) {
+                    window.location.href = "admin.html";
+                  
+                  }
+                  else {
+                    window.location.href = "classlist.html";
+                  }
+              
+  							},
+  							error: function(user, error) {
+  								console.log("you're a piece of shit");
+    							alert("Bitch you got an Error: " + error.code + " " + error.message);
+  							}
+						});
+ 					}
+ 					else {
+ 						console.log("did not find shit");
+  						console.log(newUser);
+  						if (newUser) {
+							console.log("this is a new user");
+							var user = new Parse.User();	
+
+							user.set("username", email);
+
+							var phone = $("#phone").val();
+							user.set("phone", phone);
+
+							user.set("password", password)
+
+							user.signUp(null, {
+  								success: function(user) {
+  									console.log("yay");
+  		  							window.location.href = "classlist.html";
+  								},
+ 								error: function(user, error) {
+ 									console.log("fuck")
+   		 							alert("Error: " + error.code + " " + error.message);
+  								}
+  							})
+						}
+ 					}
+
   				}
-  			})
-		});
-	})
+
+			});
+
+});
+});
 
 </script>
 
