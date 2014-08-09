@@ -48,7 +48,9 @@
 
 	$(document).ready(function() {
 
-		$("#login").mouseup(function() {
+		$("#login").on('mouseenter', function() {
+
+			console.log("IM COMING IN");
 
 			var email = $("#email").val();
 			var password = $("#password").val();
@@ -65,18 +67,19 @@
 
  						Parse.User.logIn(email, password, {
   							success: function(user) {
-  								console.log("has successfully logged in")
+  								console.log("has successfully logged in");
+
    								window.location.href = "classlist.html";
   							},
   							error: function(user, error) {
-  								console.log("you're a piece of shit")
+  								console.log("you're a piece of shit");
     							alert("Bitch you got an Error: " + error.code + " " + error.message);
   							}
 						});
  					}
  					else {
- 						console.log("did not find shit")
-  						console.log(newUser)
+ 						console.log("did not find shit");
+  						console.log(newUser);
   						if (newUser) {
 							console.log("this is a new user");
 							var user = new Parse.User();	
