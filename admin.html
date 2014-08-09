@@ -54,9 +54,6 @@
 		  		<div class="panel-heading" style = "text-align: center"><a href = "">My Queues</a></div>
 
 			  <ul class="list-group" id = "my_queues">
-			    <li class="list-group-item" style = "text-align: center">One</li>
-			    <li class="list-group-item" style = "text-align: center">Two</li>
-			    <li class="list-group-item" style = "text-align: center">Three</li>
 			  </ul>
 			</div>
 			<div class="panel panel-default" id = "middle">
@@ -116,7 +113,7 @@
 				console.log(queue.length);
 				for(j = 0; j < queue.length; j++) {
 					console.log(queue[j].get("Name"));
-					$("#available_queues").append("<li class=\"list-group-item\" id = \"existing_queue\" style = \"text-align: center\">" + queue[j].get("Name") + "</li>");
+					$("#available_queues").append("<li class=\"list-group-item\" style = \"text-align: center\"><a href = \"\" id = \"existing_queue\">" + queue[j].get("Name") + "</a></li>");
 					if (queue[j].get("Owner") == Parse.User.current().get("username")) {
             			$("#my_queues").append("<li class=\"list-group-item\" style = \"text-align: center\">" + queue[j].get("Name") + "</li>");
             		}
@@ -175,6 +172,7 @@
 		var foundUser = false;
 
 		$('#add').click(function(e) {
+			console.log("Add clicked");
 			var addUser = $('#addUser').val();
 			var users = new Parse.Query("User");
 			users.find({
@@ -197,40 +195,73 @@
 					}
 				}
 			});
-			currentQueue.set("QueuedUsers", currentQueue.get("QueuedUsers").push(addUser));
-			currentQueue.save();
+			currentQueue.get("QueuedUsers").push(addUser);
+			currentQueue.save({
+				QueuedUsers: currentQueue.get("QueuedUsers")
+			}, {
+				success: function(current) {
+					console.log("Save successful");
+				},
+				error: function(current, error) {
+					console.log("Save failed; Error: " + error.message);
+				}
+			});
+			
 		});
 		$('#remove').click(function(e) {
+			console.log("Remove clicked");
 			var removeUser = $('#removeUser').val();
-			console.log(currentQueue);
+			console.log(removeUser);
 			var inQueue = currentQueue.get("QueuedUsers");
 			for (i = 0; i < inQueue.length; i++) {
 				if(inQueue[i] === removeUser) {
 					foundUser = true;
+					console.log("Found");
 					inQueue.splice(i,1); // Removes the selected user from the group
+					console.log(inQueue);
 					break;
 				}
 			}
-			currentQueue.get("QueuedUsers").splice(currentQueue.get("QueuedUsers").index(removeUser), 1);
-			currentQueue.set("QueuedUsers", currentQueue.get("QueuedUsers"));
-			currentQueue.save();
 			
+
 			if(!foundUser) {
 				alert("We could not find a registered user by that username!");
 			}
 			else {
 				alert("Success! User " + removeUser + " was removed from the queue!");
 			}
-			currentReset();
-			for(x = 0; x < inQueue.length; x++) {
-				$("#current").append("<li class=\"list-group-item " + inQueue[x] + "\" style = \"text-align: center\">" + inQueue[x] + "</li>")
-				console.log(inQueue[x]);
+
+			var y = 0;
+			for(y = 0; y < currentQueue.get("QueuedUsers").length; y++) {
+				if(currentQueue.get("QueuedUsers")[y] === removeUser) { break; }
 			}
+
+			currentQueue.get("QueuedUsers").splice(y, 1);
+			currentQueue.save({
+				QueuedUsers: currentQueue.get("QueuedUsers")
+			}, {
+				success: function(current) {
+					console.log("Save successful");
+				},
+				error: function(current, error) {
+					console.log("Save failed; Error: " + error.message);
+				}
+			});
+			// currentReset();
+			// for(x = 0; x < inQueue.length; x++) {
+			// 	$("#current").append("<li class=\"list-group-item " + inQueue[x] + "\" style = \"text-align: center\">" + inQueue[x] + "</li>");
+			// 	console.log(inQueue[x]);
+			// }
+			// foundUser = false;
+			// console.log(foundUser);
+			window.location.href = "admin.html";
 		});
 
 		var currentReset = function() {
+			console.log("In Reset")
 			$("#current").empty();
 			$("#current").append("<li><div class=\"row\"><div class=\"col-lg-6\"><div class=\"input-group\"><input type=\"removeUser\" id = \"removeUser\" class=\"form-control\"><span class=\"input-group-addon\" id = \"remove\">Remove</span></div><!-- /input-group --></div><!-- /.col-lg-6 --><div class=\"col-lg-6\"><div class=\"input-group\"><input type=\"addUser\" id = \"addUser\" class=\"form-control\"><span class=\"input-group-addon\" id = \"add\">Add</span></div><!-- /input-group --></div><!-- /.col-lg-6 --></div><!-- /.row --></li>");
+			console.log("Finished Reset");
 		};
 
 		$('#signout').click(function(e){
