@@ -28,14 +28,14 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand" style = "font-size: 40px; font-family: cursive, Georgia">Queue</a>
+	      <a class="navbar-brand" style = "font-size: 40px; color: green; font-family: cursive, Georgia">Queue</a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav navbar-right">
 	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style = "font-size: 20px">Cathy Chen<span class="caret"></span></a>
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style = "font-size: 20px; color: green">Cathy Chen<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
 	            <li id = "update"><a href="">Update Account Info</a></li>
 	            <li id = "signout"><a href="index.html">Sign Out</li>
@@ -45,8 +45,49 @@
 	    </div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
-	<div id = "usertype">
-		<h3>Cathy Chen<span class="label label-danger">Admin</span></h3>
+	<div class = "bodygroup">
+		<div id = "usertype">
+			<h3><span style = "color: green">Cathy Chen </span><span class="label label-danger">Admin</span></h3>
+		</div>
+		<div class = "queues">
+			<div class="panel panel-default" id = "leftmost">
+		  		<div class="panel-heading" style = "text-align: center"><a href = "">My Queues</a></div>
+
+			  <ul class="list-group">
+			    <li class="list-group-item" style = "text-align: center">One</li>
+			    <li class="list-group-item" style = "text-align: center">Two</li>
+			    <li class="list-group-item" style = "text-align: center">Three</li>
+			</div>
+			<div class="panel panel-default" id = "middle">
+		  		<div class="panel-heading" style = "text-align: center"><a href = "">Available Queues</a></div>
+
+			  <ul class="list-group" id = "available_queues">
+			    <!-- <li class="list-group-item" style = "text-align: center"><a href = "">One</a></li>
+			    <li class="list-group-item" style = "text-align: center"><a href = "">Two</a></li>
+			    <li class="list-group-item" style = "text-align: center"><a href = "">Three</a></li> -->
+			</div>
+			<div class="panel panel-default" id = "rightmost">
+		  		<div class="panel-heading" style = "text-align: center"><a href = "">Current Queue</a></div>
+
+			  <ul class="list-group" id = "current">
+			  	<li>
+			  		<div class="row">
+					  	<div class="col-lg-6">
+					    	<div class="input-group">
+					      		<input type="removeUser" id = "removeUser" class="form-control">
+					      		<span class="input-group-addon" id = "remove">Remove</span>
+					    	</div><!-- /input-group -->
+					  	</div><!-- /.col-lg-6 -->
+					  	<div class="col-lg-6">
+					    	<div class="input-group">
+					      		<input type="addUser" id = "addUser" class="form-control">
+					      		<span class="input-group-addon" id = "add">Add</span>
+					    	</div><!-- /input-group -->
+					  	</div><!-- /.col-lg-6 -->
+					</div><!-- /.row -->
+			  	</li>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
@@ -59,21 +100,126 @@
 
 		Parse.User.logIn("cathychenn@gmail.com", "password", {
 			success: function(user) {
-				console.log("Log In successful");
+				console.log("Log In Successful");
 			},
 			error: function(user, error) {
-				console.log("You messed up");
+				console.log("Error" + error.code + " " + error.message);
+			}
+		});
+		var currentQueue = null;
+		var queues = new Parse.Query("Queue");
+		queues.find({
+			success: function(queue) {
+				console.log(queue.length);
+				for(j = 0; j < queue.length; j++) {
+					console.log(queue[j].get("Name"));
+					$("#available_queues").append("<li class=\"list-group-item\" id = \"existing_queue\" style = \"text-align: center\">" + queue[j].get("Name") + "</li>");
+					if(j === 0) {
+						console.log(queue[j].get("QueuedUsers").length);
+						currentQueue = queue[j];
+						for(n = 0; n < currentQueue.get("QueuedUsers").length; n++) {
+							$("#current").append("<li class=\"list-group-item " + currentQueue.get("QueuedUsers")[n] + "\" style = \"text-align: center\">" + currentQueue.get("QueuedUsers")[n] + "</li>")
+							console.log(currentQueue.get("QueuedUsers")[n]);
+						}
+					}
+				}
+			}
+		})
+		
+		
+
+		$('#existing_queue').click(function(e) {
+			console.log("A queue was clicked")
+			currentQueue = $(this).text();
+			console.log(currentQueue);
+			// Deletes all elements from previously selected queue
+			$("#current").empty();
+			$("#current").append("<li><div class=\"row\"><div class=\"col-lg-6\"><div class=\"input-group\"><input type=\"removeUser\" id = \"removeUser\" class=\"form-control\"><span class=\"input-group-addon\" id = \"remove\">Remove</span></div><!-- /input-group --></div><!-- /.col-lg-6 --><div class=\"col-lg-6\"><div class=\"input-group\"><input type=\"addUser\" id = \"addUser\" class=\"form-control\"><span class=\"input-group-addon\" id = \"add\">Add</span></div><!-- /input-group --></div><!-- /.col-lg-6 --></div><!-- /.row --></li>");
+			// Retrieves current member in queue and displays top five
+			var allQueues = new Parse.Query("Queue");
+			allQueues.find({
+				success: function(queue) {
+					for(k = 0; k < queue.length; k++) {
+						if(queue.get("Name") === currentQueue) {
+							for(m = 0; m < queue[k].length; m++) {
+								$("#current").append("<li class=\"list-group-item " + queue[k].get("QueuedUsers")[m] + "\" style = \"text-align: center\">" + queue[k].get("QueuedUsers")[m] + "</li>")
+							}
+							break;
+						}
+						
+					}
+				}
+			});
+		});
+
+		$("#update").click(function(e) {
+			var changePassword = confirm("Are you sure you want to change your password?");
+			if(changePassword) {
+				Parse.User.requestPasswordReset(Parse.User.current().get("username"), {
+				    success: function() {
+				    	alert("An email has been sent with instructions on how to change your password");
+				    },
+				    error: function(error) {
+				      // Show the error message somewhere
+				      alert("Error: " + error.code + " " + error.message);
+				    }
+				});
 			}
 		});
 
-		$('signout').click(function(e){
+		var foundUser = false;
+
+		$('#add').click(function(e) {
+			var addUser = $('#addUser').val();
+			var users = new Parse.Query("User");
+			users.find({
+				success: function(user) {
+					foundUser = false;
+					for(i = 0; i < user.length; i++) {
+						if(user[i].get("username") === addUser) {
+							$('#current').append("<li class=\"list-group-item\" style = \"text-align: center\"><a href = \"\">" + addUser + "</a></li>");
+							foundUser = true;
+							break;
+							// Add current user to the current queue somehow (figure out how to actually retreive the current queue)
+						}
+					}
+					if(!foundUser) {
+						alert("We could not find a registered user by that username!");
+					}
+					else {
+						alert("Success! User " + addUser + " was added to the queue!");
+
+					}
+				}
+			});
+		});
+		$('#remove').click(function(e) {
+			var removeUser = $('#removeUser').val();
+			console.log(currentQueue);
+			var inQueue = currentQueue.get("QueuedUsers");
+			for (i = 0; i < inQueue.length; i++) {
+				if(inQueue[i] === removeUser) {
+					foundUser = true;
+					inQueue.splice(i,1); // Removes the selected user from the group
+					break;
+				}
+			}
+			var hashtag = "#" + removeUser;
+			$("#current").find($(hashtag)).remove();
+			if(!foundUser) {
+				alert("We could not find a registered user by that username!");
+			}
+			else {
+				alert("Success! User " + removeUser + " was removed from the queue!");
+			}
+		});
+
+		$('#signout').click(function(e){
 			Parse.User.logOut();
+			alert("Goodbye!");
 			window.location.href = "index.html";
 			console.log(Parse.User.current());
 
 		});
 	})
 </script>
-
-
-
