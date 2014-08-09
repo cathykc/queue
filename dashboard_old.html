@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Dashboard</title>
+  <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="css/dashboard.css"/>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Goudy+Bookletter+1911' rel='stylesheet' type='text/css'>
+  <script src="//www.parsecdn.com/js/parse-1.2.19.min.js"></script>
+</head>
+
+<body>
+  <!--
+	 <div class="navbar navbar-fixed-top" role="navigation">
+
+      	<div class="container">
+
+        	<div class="navbar-header">
+          		<div class="navbar-text">Queue</div>
+              <button style="float:right" type="button" class="navbar-button" id ="signout">Sign Out</button>
+              <button style="float:right" type="button" class="navbar-button" id ="edit info">Edit Info</button>
+              <p style="float:right" class="navbar-button" id ="username">Username</p>
+        	</div>
+      	</div>
+    </div>
+
+    <div class="container">
+
+      <div class="sometext">
+        <h1>Usertype</h1>
+        <p class="lead">This is some random filler text<br> Description, how to use, and table queue goes here.</p>
+      </div>
+
+    </div>
+  -->
+
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand">Queue</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="username">Username</span><span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li id = "update"><a href="">Update Account Info</a></li>
+              <li id = "signout"><a href="index.html">Sign Out</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="dashboard-info">
+    <div class="panel panel-default" style="float:right">
+      <div class="panel-heading">Queue Currently Being Viewed</div>
+      <ol class = "queue_list">
+        <li>Queue1</li>
+        <li>Queue2</li>
+        <li>Queue3</li>
+      </ol>
+      <button type="button" class="queue_button">Add Myself to This Queue</button>
+    </div>
+    <div class="panel panel-default" style="float:right">
+      <div class="panel-heading">Available Queues</div>
+      <ol class = "queue_list" id="available_queues">
+      </ol>
+    </div>
+
+
+    <div class="panel panel-default" style="float:right">
+      <div class="panel-heading">My Queues</div>
+      <ol class = "queue_list" id="my_queues">
+      </ol>
+    </div>
+  </div>
+    <!---
+    <button type="button" id="testButton">Test Adding a Queue</button>
+    -->
+</body>
+</html>
+
+
+<script>
+  Parse.initialize("klKwGZhfHkgfQBtrdqUqQaSTjFZ2SBtzn7nyg7Ub", "vnOLUcghwRa6nmVHUFoRrmnVC8Y8KMKSDC8k9S73");
+
+  $(document).ready(function() {
+    /*
+    $("#testButton").click(function() {
+      var Queue = Parse.Object.extend("Queue");
+      var queue = new Queue();
+      queue.set("QueuedUsers",["Joe", "Sam", "Anaconda"]);
+      queue.set("Name", "Test2")
+      queue.save(null, {
+        success: function(queue) {
+          // Execute any logic that should take place after the object is saved.
+          alert("Created new queue!");
+        },
+        error: function(queue, error) {
+          // Execute any logic that should take place if the save fails.
+          // error is a Parse.Error with an error code and description.
+          alert('Failed to create new object, with error code: ' + error.message);
+        }
+      });
+    });
+    */
+    var username = Parse.User.current().get("username");
+    console.log(username);
+    $('#username').text(username);
+    var allQueues = new Parse.Query("Queue");
+    allQueues.find({
+      success: function(results) {
+        // results is an array of Parse.Object.
+        for (i = 0; i < results.length; i++) {
+          // available queues
+          $("#available_queues").append("<li>" + results[i].get("Name") + "</li>");
+          // add to my queues if I am the owner
+          if (results[i].get("Owner") == Parse.User.current().get("username")) {
+            $("#my_queues").append("<li>" + results[i].get("Name") + "</li>");
+          }
+        }
+      },
+
+      error: function(error) {
+        // error is an instance of Parse.Error.
+      }
+    });
+
+
+
+
+  });
+
+
+
+
+</script>
