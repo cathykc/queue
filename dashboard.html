@@ -55,10 +55,10 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="username">Username<span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="username">Username</span><span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li id = "update"><a href="">Update Account Info</a></li>
-              <li id = "signout"><a href="index.html">Sign Out</li>
+              <li id = "signout"><a href="index.html">Sign Out</a></li>
             </ul>
           </li>
         </ul>
@@ -85,10 +85,7 @@
 
     <div class="panel panel-default" style="float:right">
       <div class="panel-heading">My Queues</div>
-      <ol class = "queue_list">
-        <li>Queue1</li>
-        <li>Queue2</li>
-        <li>Queue3</li>
+      <ol class = "queue_list" id="my_queues">
       </ol>
     </div>
   </div>
@@ -122,14 +119,20 @@
       });
     });
     */
-    //var username = Parse.User.current().get("Name")
-    $('#username').text("abc");
-    allQueues = new Parse.Query("Queue")
+    var username = Parse.User.current().get("username")
+    console.log(username)
+    $('#username').text(username);
+    var allQueues = new Parse.Query("Queue")
     allQueues.find({
       success: function(results) {
         // results is an array of Parse.Object.
         for (i = 0; i < results.length; i++) {
+          // available queues
           $("#available_queues").append("<li>" + results[i].get("Name") + "</li>");
+          // add to my queues if I am the owner
+          if (results[i].get("Owner") == Parse.User.current().get("username")) {
+            $("#my_queues").append("<li>" + results[i].get("Name") + "</li>");
+          }
         }
       },
 
