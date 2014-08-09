@@ -62,7 +62,12 @@
 
 			user.signUp(null, {
   				success: function(user) {
-    				window.location.href = "classlist.html";
+  					if(!user.admin) {
+  						window.location.href = "classlist.html";
+  					}
+  					else {
+  						window.location.href = "admin.html";
+  					}
   				},
  				error: function(user, error) {
     				alert("Error: " + error.code + " " + error.message);
