@@ -68,8 +68,15 @@
  						Parse.User.logIn(email, password, {
   							success: function(user) {
   								console.log("has successfully logged in");
-
-   								window.location.href = "classlist.html";
+                  console.log(user.get("admin"));
+                  if(user.get("admin")) {
+                    window.location.href = "admin.html";
+                  
+                  }
+                  else {
+                    window.location.href = "classlist.html";
+                  }
+              
   							},
   							error: function(user, error) {
   								console.log("you're a piece of shit");
@@ -108,11 +115,8 @@
 
 			});
 
-			
-
-			
-		});
-	})
+});
+});
 
 </script>
 
