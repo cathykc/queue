@@ -47,21 +47,23 @@
 	</nav>
 	<div class = "bodygroup">
 		<div id = "usertype">
-			<h3><span style = "color: green">Cathy Chen </span><span class="label label-danger">Admin</span></h3>
+			<h3><span class="label label-danger">Admin</span></h3>
 		</div>
 		<div class = "queues">
 			<div class="panel panel-default" id = "leftmost">
 		  		<div class="panel-heading" style = "text-align: center"><a href = "">My Queues</a></div>
 
-			  <ul class="list-group">
+			  <ul class="list-group" id = "my_queues">
 			    <li class="list-group-item" style = "text-align: center">One</li>
 			    <li class="list-group-item" style = "text-align: center">Two</li>
 			    <li class="list-group-item" style = "text-align: center">Three</li>
+			  </ul>
 			</div>
 			<div class="panel panel-default" id = "middle">
 		  		<div class="panel-heading" style = "text-align: center"><a href = "">Available Queues</a></div>
 
 			  <ul class="list-group" id = "available_queues">
+			  </ul>
 			    <!-- <li class="list-group-item" style = "text-align: center"><a href = "">One</a></li>
 			    <li class="list-group-item" style = "text-align: center"><a href = "">Two</a></li>
 			    <li class="list-group-item" style = "text-align: center"><a href = "">Three</a></li> -->
@@ -86,6 +88,7 @@
 					  	</div><!-- /.col-lg-6 -->
 					</div><!-- /.row -->
 			  	</li>
+			  </ul>
 			</div>
 		</div>
 	</div>
@@ -96,9 +99,7 @@
 <script>
 	Parse.initialize("klKwGZhfHkgfQBtrdqUqQaSTjFZ2SBtzn7nyg7Ub", "vnOLUcghwRa6nmVHUFoRrmnVC8Y8KMKSDC8k9S73");
 
-	$(document).ready(function() {
-
-		Parse.User.logIn("cathychenn@gmail.com", "password", {
+	Parse.User.logIn("cathychenn@gmail.com", "password", {
 			success: function(user) {
 				console.log("Log In Successful");
 			},
@@ -106,6 +107,8 @@
 				console.log("Error" + error.code + " " + error.message);
 			}
 		});
+
+	$(document).ready(function() {
 		var currentQueue = null;
 		var queues = new Parse.Query("Queue");
 		queues.find({
@@ -114,6 +117,9 @@
 				for(j = 0; j < queue.length; j++) {
 					console.log(queue[j].get("Name"));
 					$("#available_queues").append("<li class=\"list-group-item\" id = \"existing_queue\" style = \"text-align: center\">" + queue[j].get("Name") + "</li>");
+					if (queue[j].get("Owner") == Parse.User.current().get("username")) {
+            			$("#my_queues").append("<li class=\"list-group-item\" style = \"text-align: center\">" + queue[j].get("Name") + "</li>");
+            		}
 					if(j === 0) {
 						console.log(queue[j].get("QueuedUsers").length);
 						currentQueue = queue[j];
@@ -191,7 +197,8 @@
 					}
 				}
 			});
-			currentQueue.get("QueuedUsers").push(addUser);
+			currentQueue.set("QueuedUsers", currentQueue.get("QueuedUsers").push(addUser));
+			currentQueue.save();
 		});
 		$('#remove').click(function(e) {
 			var removeUser = $('#removeUser').val();
@@ -204,7 +211,10 @@
 					break;
 				}
 			}
-			// Save new QueuedUsers field of currentQueue
+			currentQueue.get("QueuedUsers").splice(currentQueue.get("QueuedUsers").index(removeUser), 1);
+			currentQueue.set("QueuedUsers", currentQueue.get("QueuedUsers"));
+			currentQueue.save();
+			
 			if(!foundUser) {
 				alert("We could not find a registered user by that username!");
 			}
