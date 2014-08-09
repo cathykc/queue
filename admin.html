@@ -34,17 +34,19 @@
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav navbar-right">
 	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" id = "admin">Admin <span class="caret"></span></a>
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" id = "admin">Cathy Chen<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="">Update Account Info</a></li>
-	            <li><a href="">Sign Out</li>
+	            <li id = "update"><a href="">Update Account Info</a></li>
+	            <li id = "signout"><a href="index.html">Sign Out</li>
 	          </ul>
 	        </li>
 	      </ul>
 	    </div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
-	<h3 = id "usertype">username <span class="label label-success">Student</span></h3>
+	<div>
+		<h3 id = "usertype">Cathy Chen<span class="label label-danger">Admin</span></h3>
+	</div>
 </body>
 </html>
 
@@ -53,17 +55,22 @@
 	Parse.initialize("klKwGZhfHkgfQBtrdqUqQaSTjFZ2SBtzn7nyg7Ub", "vnOLUcghwRa6nmVHUFoRrmnVC8Y8KMKSDC8k9S73");
 
 	$(document).ready(function() {
-		var users = new Parse.Query(Parse.User);
-		var current = null;
-		users.equalTo(admin, true);
-		users.find({
+
+		Parse.User.logIn("cathychenn@gmail.com", "password", {
 			success: function(user) {
-				console.log(user);
-				current = user;
+				console.log("Log In successful");
+			},
+			error: function(user, error) {
+				console.log("You fucked up");
 			}
 		});
-		$("admin").html("<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" id = \"admin\">Admin: " + current.username + "<span class=\"caret\"></span></a>");
-		$("#usertype").html("<h3>" + current.username + "<span class=\"label label-default\">New</span></h3>");
+
+		$('signout').click(function(e){
+			Parse.User.logOut();
+			window.location.href = "index.html";
+			console.log(Parse.User.current());
+
+		});
 	})
 </script>
 
