@@ -113,7 +113,7 @@
 				console.log(queue.length);
 				for(j = 0; j < queue.length; j++) {
 					console.log(queue[j].get("Name"));
-					$("#available_queues").append("<li class=\"list-group-item\" style = \"text-align: center\"><a href = \"\" id = \"existing_queue\">" + queue[j].get("Name") + "</a></li>");
+					$("#available_queues").append("<li class=\"list-group-item\" style = \"text-align: center\"><button class=\"btn btn-lg btn-success btn-block\" type=\"change_queue\" id=\"existing_queue\">" + queue[j].get("Name") + "</button></li>");
 					if (queue[j].get("Owner") == Parse.User.current().get("username")) {
             			$("#my_queues").append("<li class=\"list-group-item\" style = \"text-align: center\">" + queue[j].get("Name") + "</li>");
             		}
@@ -133,8 +133,8 @@
 
 		$('#existing_queue').click(function(e) {
 			console.log("A queue was clicked")
-			currentQueue = $(this).text();
-			console.log(currentQueue);
+			newName = $(this).text();
+			console.log(newName);
 			// Deletes all elements from previously selected queue
 			currentReset();
 			// Retrieves current member in queue and displays top five
@@ -142,7 +142,7 @@
 			allQueues.find({
 				success: function(queue) {
 					for(k = 0; k < queue.length; k++) {
-						if(queue.get("Name") === currentQueue) {
+						if(queue.get("Name") === newName) {
 							for(m = 0; m < queue[k].length; m++) {
 								$("#current").append("<li class=\"list-group-item " + queue[k].get("QueuedUsers")[m] + "\" style = \"text-align: center\">" + queue[k].get("QueuedUsers")[m] + "</li>")
 							}
