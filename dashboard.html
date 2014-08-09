@@ -14,7 +14,7 @@
 </head>
 
 <body>
-
+  <!--
 	 <div class="navbar navbar-fixed-top" role="navigation">
 
       	<div class="container">
@@ -36,27 +36,52 @@
       </div>
 
     </div>
+  -->
 
-    <div class="dashboard-info">
-      <div class="panel panel-default" style="float:right">
-        <div class="panel-heading">Queue Currently Being Viewed</div>
-        <ol class = "queue_list">
-          <li>Queue1</li>
-          <li>Queue2</li>
-          <li>Queue3</li>
-        </ol>
-        <button type="button" class="queue_button">Add Myself to This Queue</button>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand">Queue</a>
       </div>
 
-      <div class="panel panel-default" style="float:right">
-        <div class="panel-heading">Available Queues</div>
-        <ol class = "queue_list">
-          <li>Queue1</li>
-          <li>Queue2</li>
-          <li>Queue3</li>
-        </ol>
-      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="username">Username<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li id = "update"><a href="">Update Account Info</a></li>
+              <li id = "signout"><a href="index.html">Sign Out</li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="dashboard-info">
+    <div class="panel panel-default" style="float:right">
+      <div class="panel-heading">Queue Currently Being Viewed</div>
+      <ol class = "queue_list">
+        <li>Queue1</li>
+        <li>Queue2</li>
+        <li>Queue3</li>
+      </ol>
+      <button type="button" class="queue_button">Add Myself to This Queue</button>
     </div>
+    <div class="panel panel-default" style="float:right">
+      <div class="panel-heading">Available Queues</div>
+      <ol class = "queue_list" id="available_queues">
+      </ol>
+    </div>
+
 
     <div class="panel panel-default" style="float:right">
       <div class="panel-heading">My Queues</div>
@@ -66,6 +91,7 @@
         <li>Queue3</li>
       </ol>
     </div>
+  </div>
     <!---
     <button type="button" id="testButton">Test Adding a Queue</button>
     -->
@@ -96,7 +122,23 @@
       });
     });
     */
-    $('#preview').text($
+    //var username = Parse.User.current().get("Name")
+    $('#username').text("abc");
+    allQueues = new Parse.Query("Queue")
+    allQueues.find({
+      success: function(results) {
+        // results is an array of Parse.Object.
+        for (i = 0; i < results.length; i++) {
+          $("#available_queues").append("<li>" + results[i].get("Name") + "</li>");
+        }
+      },
+
+      error: function(error) {
+        // error is an instance of Parse.Error.
+      }
+    });
+
+
 
 
   });
