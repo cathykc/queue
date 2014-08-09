@@ -4,13 +4,9 @@
 	width: 220px;
 }
 
-body {
-	background-color: green;
-}
-
 .collapse {
 	height: 10px;
-	background-color: #FFCC66;
+	background-image: url("http://wallpaperpanda.com/wallpapers/dTK/Xre/dTKXreATa.jpg");
 }
 .panel {
 	width: 300px;
@@ -45,6 +41,6 @@ body {
 }
 
 .bodygroup {
-	background-image: url('http://www.evolllution.com/wp-content/uploads/2012/09/empty-lecture-hall.jpg');
+	background-image: url('http://fc07.deviantart.net/fs70/i/2012/052/9/e/alps__mountain_background_by_austriaangloalliance-d4qiel1.jpg');
 	height: 500px;
 }
