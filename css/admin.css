@@ -1,9 +1,50 @@
 #usertype {
 	margin-right: auto;
 	margin-left: auto;
-	width: 200px;
+	width: 220px;
 }
 
-.container-fluid {
+body {
+	background-color: green;
+}
+
+.collapse {
 	height: 10px;
+	background-color: #FFCC66;
+}
+.panel {
+	width: 300px;
+	display: inline-block;
+}
+
+#leftmost {
+	margin-left: 100px;
+}
+
+#rightmost {
+	margin-right: 100px;
+}
+
+#middle {
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.queues {
+	display: flex;
+	justify-content: space-between;
+}
+
+.queues div {
+	white-space: nowrap;
+}
+
+.col-lg-6 {
+	display: inline-block;
+	width: 150px;
+}
+
+.bodygroup {
+	background-image: url('http://www.evolllution.com/wp-content/uploads/2012/09/empty-lecture-hall.jpg');
+	height: 500px;
 }
