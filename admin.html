@@ -35,7 +35,7 @@
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav navbar-right">
 	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style = "font-size: 20px; color: green">Cathy Chen<span class="caret"></span></a>
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style = "font-size: 20px; color: green" id = "username">Cathy Chen<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
 	            <li id = "update"><a href="">Update Account Info</a></li>
 	            <li id = "signout"><a href="index.html">Sign Out</li>
@@ -60,6 +60,9 @@
 		  		<div class="panel-heading" style = "text-align: center"><a href = "">Available Queues</a></div>
 
 			  <ul class="list-group" id = "available_queues">
+			  	<li class = "list-group-item" style = "text-align: center">
+			  		<button class="btn btn-lg btn-primary btn-block" type="addQueue" id="addQueue">Add</button>
+			  	</li>
 			  </ul>
 			    <!-- <li class="list-group-item" style = "text-align: center"><a href = "">One</a></li>
 			    <li class="list-group-item" style = "text-align: center"><a href = "">Two</a></li>
@@ -96,16 +99,10 @@
 <script>
 	Parse.initialize("klKwGZhfHkgfQBtrdqUqQaSTjFZ2SBtzn7nyg7Ub", "vnOLUcghwRa6nmVHUFoRrmnVC8Y8KMKSDC8k9S73");
 
-	Parse.User.logIn("cathychenn@gmail.com", "password", {
-			success: function(user) {
-				console.log("Log In Successful");
-			},
-			error: function(user, error) {
-				console.log("Error" + error.code + " " + error.message);
-			}
-		});
-
 	$(document).ready(function() {
+		var username = Parse.User.current().get("username");
+    	console.log(username);
+    	$('#username').text(username);
 		var currentQueue = null;
 		var queues = new Parse.Query("Queue");
 		queues.find({
@@ -129,7 +126,25 @@
 			}
 		})
 		
-		
+		$("#addQueue").click(function(e) {
+	      var Queue = Parse.Object.extend("Queue");
+	      var queue = new Queue();
+	      queue.set("QueuedUsers",[]);
+	      queue.set("Name", "CIS 121 Office Hours " + Math.floor(Math.random()*500))
+	      queue.set("Owner", Parse.User.current().get("username"));
+	      queue.save(null, {
+	        success: function(queue) {
+	          // Execute any logic that should take place after the object is saved.
+	          alert("Created new queue!");
+	        },
+	        error: function(queue, error) {
+	          // Execute any logic that should take place if the save fails.
+	          // error is a Parse.Error with an error code and description.
+	          alert('Success! You created a new queue!');
+	        }
+	      });
+	      window.location.href = "admin.html";
+	    });
 
 		$('#existing_queue').click(function(e) {
 			console.log("A queue was clicked")
